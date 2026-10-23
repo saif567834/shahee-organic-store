@@ -34,21 +34,12 @@ const { Product, User } = require('./models');
     for (const product of products) {
       await Product.updateOne(
         { sku: product.sku },
-        {
-          $set: {
-            name: product.name,
-            pricePaise: product.pricePaise,
-            stock: product.stock
-          }
-        },
+        { $setOnInsert: product },
         { upsert: true }
       );
     }
 
-   const {
-  ADMIN_EMAIL: email,
-  ADMIN_PASSWORD: password
-} = process.env;
+    const { ADMIN_EMAIL: email, ADMIN_PASSWORD: password } = process.env;
 
     if (email && password && password.length >= 10) {
       await User.updateOne(
@@ -64,7 +55,7 @@ const { Product, User } = require('./models');
 
       console.log('Admin ready:', email);
     } else {
-      console.log('Admin not updated: set ADMIN_EMAIL and ADMIN_PASSWORD (10+ characters).');
+      console.log('Set ADMIN_EMAIL and ADMIN_PASSWORD (10+ chars).');
     }
 
     console.log('Products seeded successfully.');
