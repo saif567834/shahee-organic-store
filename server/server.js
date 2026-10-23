@@ -6,7 +6,14 @@ const { Product, Order, User, Event } = require('./models');
 const E = process.env, PROD = E.NODE_ENV === 'production';
 for (const k of ['MONGODB_URI', 'JWT_SECRET']) if (!E[k]) { console.error('Missing env: ' + k); process.exit(1); }
 const SHIP = +E.SHIPPING_PAISE || 0, FREE = +E.FREE_SHIPPING_ABOVE_PAISE || 0;
-const rzp = E.RAZORPAY_KEY_ID && E.RAZORPAY_KEY_SECRET ? new Razorpay({ key_id: E.RAZORPAY_KEY_ID, key_secret: E.RAZORPAY_KEY_SECRET }) : null;
+const rzp = E.RAZORPAY_KEY_ID && E.RAZORPAY_KEY_SECRET
+  ? new Razorpay({
+      key_id: E.RAZORPAY_KEY_ID,
+      key_secret: E.RAZORPAY_KEY_SECRET
+    })
+  : null;
+
+console.log('Razorpay configured:', !!rzp);
 const eq = (a, b) => { a = Buffer.from(String(a)); b = Buffer.from(String(b)); return a.length === b.length && crypto.timingSafeEqual(a, b); };
 const hmac = (k, d) => crypto.createHmac('sha256', k).update(d).digest('hex');
 const release = async o => { // give stock back exactly once
