@@ -11,7 +11,7 @@ const { Product, User } = require('./models');
 (async () => {
   try {
     if (!process.env.MONGODB_URI) {
-      throw new Error('MONGODB_URI is missing from your .env file');
+      throw new Error('MONGODB_URI is missing from .env');
     }
 
     await mongoose.connect(process.env.MONGODB_URI);
@@ -34,12 +34,21 @@ const { Product, User } = require('./models');
     for (const product of products) {
       await Product.updateOne(
         { sku: product.sku },
-        { $setOnInsert: product },
+        {
+          $set: {
+            name: product.name,
+            pricePaise: product.pricePaise,
+            stock: product.stock
+          }
+        },
         { upsert: true }
       );
     }
 
-    const { ADMIN_EMAIL: email, ADMIN_PASSWORD: password } = process.env;
+   const {
+  ADMIN_EMAIL: email,
+  ADMIN_PASSWORD: password
+} = process.env;
 
     if (email && password && password.length >= 10) {
       await User.updateOne(
@@ -55,12 +64,10 @@ const { Product, User } = require('./models');
 
       console.log('Admin ready:', email);
     } else {
-      console.log(
-        'Set ADMIN_EMAIL and ADMIN_PASSWORD (10+ chars) to create the admin.'
-      );
+      console.log('Admin not updated: set ADMIN_EMAIL and ADMIN_PASSWORD (10+ characters).');
     }
 
-    console.log('Products seeded.');
+    console.log('Products seeded successfully.');
   } catch (error) {
     console.error('Seed failed:', error.message);
     process.exitCode = 1;
