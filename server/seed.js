@@ -20,13 +20,13 @@ const { Product, User } = require('./models');
       {
         sku: 's200',
         name: 'SHAHEE Ayurvedic Hair Oil 200 ml',
-        pricePaise: 499,
+        pricePaise: 49900,
         stock: 100
       },
       {
         sku: 's500',
         name: 'SHAHEE Ayurvedic Hair Oil 500 ml',
-        pricePaise: 999,
+        pricePaise: 99900,
         stock: 100
       }
     ];
